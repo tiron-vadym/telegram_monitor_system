@@ -1,0 +1,1 @@
+*/5 * * * * django-user /app/.venv/bin/python /app/telethon.py >> /var/log/cron.log 2>&1
