@@ -1,13 +1,17 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import sessionmaker
+import os
+
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    create_async_engine,
+    async_sessionmaker
+)
 from sqlalchemy.ext.declarative import declarative_base
+from dotenv import load_dotenv
 
-
-DATABASE_URL = ("postgresql+asyncpg://"
-                "postgres:lol321tv@localhost:5432/tg_monitor_system")
-engine = create_engine(DATABASE_URL, echo=True)
-AsyncSessionLocal = sessionmaker(
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
+engine = create_async_engine(DATABASE_URL, echo=True)
+AsyncSessionLocal = async_sessionmaker(
     bind=engine,
     class_=AsyncSession,
     expire_on_commit=False
