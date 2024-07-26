@@ -17,22 +17,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-#RUN adduser \
-#    --disabled-password \
-#    --no-create-home \
-#    django-user
-#
-#USER django-user
-
 ADD crontab /etc/cron.d/telegram_monitor_cron
 RUN chmod 0644 /etc/cron.d/telegram_monitor_cron
 RUN crontab /etc/cron.d/telegram_monitor_cron
 RUN touch /var/log/cron.log
-CMD ["sh", "-c", "cron && tail -f /var/log/cron.log"]
-
-#COPY crontab /etc/cron.d/telegram_monitor_cron
-#RUN chmod 0644 /etc/cron.d/telegram_monitor_cron
-#RUN touch /var/log/cron.log
-#COPY entrypoint.sh /entrypoint.sh
-#RUN chmod +x /entrypoint.sh
-#ENTRYPOINT ["/entrypoint.sh"]

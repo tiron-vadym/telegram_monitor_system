@@ -1,20 +1,50 @@
-version: "3"
-
 services:
   db:
     image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: lol321tv
+      POSTGRES_DB: tg_monitor_system
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    env_file:
-      - .env
 
   app:
     build:
       context: .
-    depends_on:
-      - db
     env_file:
       - .env
     volumes:
       - .:/app
+    command: ["sh", "-c", "cron && tail -f /var/log/cron.log"]
+    depends_on:
+      - db
     restart: always
+
+  bot:
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: ["sh", "-c", "alembic upgrade head && python -m app.bot"]
+    depends_on:
+      - db
+    restart: always
+
+  telethon:
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: ["sh", "-c", "alembic upgrade head && python -m app.telethon_client"]
+    depends_on:
+      - db
+    restart: always
+
+volumes:
+  postgres_data:
